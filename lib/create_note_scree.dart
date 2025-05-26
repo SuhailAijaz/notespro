@@ -25,6 +25,7 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
             if(value == null || value.isEmpty){
         return "Please enter title";
             }
+
             return null;
           }),
           customTextField(hintText: "Enter Subject",validator: (value){
