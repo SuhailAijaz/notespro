@@ -20,19 +20,21 @@ Widget customMediumText({
 Widget customTextField({
   required String hintText,
   String? Function(String?)? validator,
-  int? maxLines
+  int? maxLines,
+  TextEditingController? controller
 
 }){
-  return TextFormField(maxLines:maxLines ?? 1,validator:validator,decoration: InputDecoration(hintText: hintText,
+  return TextFormField(controller:controller ,
+    maxLines:maxLines ?? 1,validator:validator,decoration: InputDecoration(hintText: hintText,
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12),)
   ),);
 }
 
 Widget customElevatedButton({
-  required void Function()? onTap
+  required void Function()? onTap,required String textValue
 }){
   return ElevatedButton(
-      onPressed: onTap, child: customMediumText(textValue: "Save"));
+      onPressed: onTap, child: customMediumText(textValue: textValue));
 }
 
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:notes_pro/splash_screen.dart';
 
 void main() {
@@ -8,7 +9,7 @@ void main() {
 class NotesApp  extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-     return MaterialApp(
+     return GetMaterialApp(
        debugShowCheckedModeBanner: false,
        home: SplashScreen(),);
   }

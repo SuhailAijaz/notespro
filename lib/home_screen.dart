@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:notes_pro/create_note_scree.dart';
 import 'package:notes_pro/utils/app_widgets.dart';
 import 'package:notes_pro/create_note_scree.dart';
@@ -20,19 +22,19 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder:
           (ctx) => AlertDialog(
-            title: Text("Confirm Delete"),
-            content: Text("Do you really want to delete '${items[index]}'?"),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(false),
-                child: Text("Cancel"),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(true),
-                child: Text("Delete"),
-              ),
-            ],
+        title: Text("Confirm Delete"),
+        content: Text("Do you really want to delete '${items[index]}'?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text("Cancel"),
           ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text("Delete"),
+          ),
+        ],
+      ),
     );
 
     if (confirm == true) {
@@ -57,10 +59,11 @@ class _HomeScreenState extends State<HomeScreen> {
         child: FloatingActionButton(
           backgroundColor: Colors.grey,
           onPressed: () {
-            Navigator.push(
+            Get.to(CreateNoteScreen(isEditable: false));
+            /*  Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => CreateNoteScreen()),
-            );
+              MaterialPageRoute(builder: (context) => CreateNoteScreen(isEditable: false,)),
+            );*/
           },
           child: Icon(Icons.add, color: Colors.white),
         ),
@@ -77,7 +80,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 motion: DrawerMotion(),
                 children: [
                   SlidableAction(
-                    onPressed: (ctx) => Navigator.push(context,MaterialPageRoute(builder: (context) => CreateNoteScreen(),)),
+                    onPressed: (ctx) =>
+                        Get.to(CreateNoteScreen(isEditable: true)),
+                    // Navigator.push(context,MaterialPageRoute(builder: (context) => CreateNoteScreen(isEditable: true,),)),
                     backgroundColor: Colors.red,
                     foregroundColor: Colors.white,
                     icon: Icons.edit,
@@ -118,3 +123,4 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
