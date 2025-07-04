@@ -26,3 +26,5 @@ on swipe if delete clciked popup menu opened and delete clicked and update the l
 create account screen and validate the fields and handle navigation.
 swipe to delete ui
 swipe to edit ui
+
+

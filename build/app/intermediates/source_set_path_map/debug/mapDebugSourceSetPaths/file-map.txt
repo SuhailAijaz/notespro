@@ -25,3 +25,4 @@ com.example.notes_pro.app-resValues-23 /Users/mac/Desktop/suhail_work-space/unti
 com.example.notes_pro.app-packageDebugResources-24 /Users/mac/Desktop/suhail_work-space/untitled folder/notespro/build/app/intermediates/incremental/debug/packageDebugResources/merged.dir
 com.example.notes_pro.app-packageDebugResources-25 /Users/mac/Desktop/suhail_work-space/untitled folder/notespro/build/app/intermediates/incremental/debug/packageDebugResources/stripped.dir
 com.example.notes_pro.app-debug-26 /Users/mac/Desktop/suhail_work-space/untitled folder/notespro/build/app/intermediates/merged_res/debug/mergeDebugResources
+com.example.notes_pro.app-debug-27 /Users/mac/Desktop/suhail_work-space/untitled folder/notespro/build/path_provider_android/intermediates/packaged_res/debug/packageDebugResources

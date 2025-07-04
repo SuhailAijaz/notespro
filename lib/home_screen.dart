@@ -1,11 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:notes_pro/create_note_scree.dart';
+import 'package:notes_pro/note.dart';
 import 'package:notes_pro/utils/app_widgets.dart';
-import 'package:notes_pro/create_note_scree.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,35 +15,30 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<String> items = List.generate(5, (index) => "Item $index");
+  late Box<Note> noteBox;
 
-  void _confirmDelete(int index, BuildContext context) async {
+  @override
+  void initState() {
+    super.initState();
+    noteBox = Hive.box<Note>('notes'); // Access Hive box
+  }
+
+  void _confirmDelete(int index) async {
     final confirm = await showDialog<bool>(
       context: context,
-      builder:
-          (ctx) => AlertDialog(
+      builder: (ctx) => AlertDialog(
         title: Text("Confirm Delete"),
-        content: Text("Do you really want to delete '${items[index]}'?"),
+        content: Text("Do you really want to delete this note?"),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text("Delete"),
-          ),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text("Cancel")),
+          TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text("Delete")),
         ],
       ),
     );
 
     if (confirm == true) {
-      setState(() {
-        items.removeAt(index);
-      });
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Item deleted")));
+      await noteBox.deleteAt(index); // Delete from Hive
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Note deleted")));
     }
   }
 
@@ -59,68 +54,70 @@ class _HomeScreenState extends State<HomeScreen> {
         child: FloatingActionButton(
           backgroundColor: Colors.grey,
           onPressed: () {
-            Get.to(CreateNoteScreen(isEditable: false));
-            /*  Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => CreateNoteScreen(isEditable: false,)),
-            );*/
+            Get.to(() => CreateNoteScreen(isEditable: false));
           },
           child: Icon(Icons.add, color: Colors.white),
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 10),
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            return Slidable(
-              key: ValueKey(items[index]),
-              endActionPane: ActionPane(
-                motion: DrawerMotion(),
-                children: [
-                  SlidableAction(
-                    onPressed: (ctx) =>
-                        Get.to(CreateNoteScreen(isEditable: true)),
-                    // Navigator.push(context,MaterialPageRoute(builder: (context) => CreateNoteScreen(isEditable: true,),)),
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
-                    icon: Icons.edit,
-                    label: 'Edit',
-                  ),
-                  SlidableAction(
-                    onPressed: (ctx) => _confirmDelete(index, context),
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
-                    icon: Icons.delete,
-                    label: 'Delete',
-                  ),
-                ],
-              ),
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.amber,
+      body: ValueListenableBuilder(
+        valueListenable: noteBox.listenable(),
+        builder: (context, Box<Note> box, _) {
+          if (box.isEmpty) {
+            return Center(child: Text("No notes added yet"));
+          }
+
+          return ListView.builder(
+            itemCount: box.length,
+            itemBuilder: (context, index) {
+              final note = box.getAt(index);
+              return Slidable(
+                key: ValueKey(note),
+                endActionPane: ActionPane(
+                  motion: DrawerMotion(),
+                  children: [
+                    SlidableAction(
+                      onPressed: (ctx) {
+                        // You can pass the index and note to edit later
+                        Get.to(() => CreateNoteScreen(isEditable: true));
+                      },
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      icon: Icons.edit,
+                      label: 'Edit',
+                    ),
+                    SlidableAction(
+                      onPressed: (ctx) => _confirmDelete(index),
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      icon: Icons.delete,
+                      label: 'Delete',
+                    ),
+                  ],
                 ),
-                child: ListTile(
-                  title: customMediumText(textValue: "Title"),
-                  subtitle: customMediumText(
-                    textValue: "SubTitle",
-                    color: Colors.grey,
-                    fontSize: 12,
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.amberAccent,
                   ),
-                  trailing: customMediumText(
-                    textValue: "Create by",
-                    fontSize: 12,
+                  child: ListTile(
+                    title: customMediumText(textValue: note?.title ?? ""),
+                    subtitle: customMediumText(
+                      textValue: note?.description ?? "",
+                      color: Colors.grey.shade800,
+                      fontSize: 12,
+                    ),
+                    trailing: customMediumText(
+                      textValue: "Created",
+                      fontSize: 12,
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
-        ),
+              );
+            },
+          );
+        },
       ),
     );
   }
 }
-

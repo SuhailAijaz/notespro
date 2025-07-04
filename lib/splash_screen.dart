@@ -15,7 +15,8 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Timer(Duration(seconds: 4),() => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(),)),);
+    Timer(Duration(seconds: 4),() => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>
+        HomeScreen(),)),);
     super.initState();
   }
   @override
@@ -23,6 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
         body: Center(
             child: customLargeText(
-                textValue: "LOGO",fontSize: 50)));
+                textValue: "LOGO",fontSize: 50))
+    );
   }
 }
